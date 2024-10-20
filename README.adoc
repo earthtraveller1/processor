@@ -1,0 +1,3 @@
+= Processor
+
+A processor for personal usage. No library dependencies, do not worry.
