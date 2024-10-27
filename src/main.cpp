@@ -11,8 +11,8 @@ enum class Error {
 
 struct DocumentTemplate {
     std::string css_file;
-    std::string title_element;
-    std::string paragraph_element;
+    std::string title_class;
+    std::string paragraph_class;
     std::string header;
     std::string footer;
 
@@ -24,8 +24,8 @@ struct DocumentTemplate {
         }
 
         std::string css_file;
-        std::string title_element;
-        std::string paragraph_element;
+        std::string title_class;
+        std::string paragraph_class;
         std::string header;
         std::string footer;
 
@@ -59,10 +59,10 @@ struct DocumentTemplate {
 
             if (statement_parts.at(0) == "css_file") {
                 css_file = statement_parts.at(1);
-            } else if (statement_parts.at(0) == "title_element") {
-                title_element = statement_parts.at(1);
-            } else if (statement_parts.at(0) == "paragraph_element") {
-                paragraph_element = statement_parts.at(1);
+            } else if (statement_parts.at(0) == "title_class") {
+                title_class = statement_parts.at(1);
+            } else if (statement_parts.at(0) == "paragraph_class") {
+                paragraph_class = statement_parts.at(1);
             } else if (statement_parts.at(0) == "header" &&
                        statement_parts.at(1) == "{") {
                 reading_header = true;
@@ -75,8 +75,8 @@ struct DocumentTemplate {
         return {
             DocumentTemplate{
                 .css_file = css_file,
-                .title_element = title_element,
-                .paragraph_element = paragraph_element,
+                .title_class = title_class,
+                .paragraph_class = paragraph_class,
                 .header = header,
                 .footer = footer,
             },
