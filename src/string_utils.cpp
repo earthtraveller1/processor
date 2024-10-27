@@ -16,7 +16,7 @@ std::vector<std::string> split_string(std::string_view string,
             }
 
             if (hit_delimiter) {
-                i += delimiter.size();
+                i += delimiter.size() - 1;
                 segments.push_back(current_segment);
                 current_segment = "";
                 continue;
@@ -25,6 +25,8 @@ std::vector<std::string> split_string(std::string_view string,
 
         current_segment.push_back(string[i]);
     }
+
+    segments.push_back(current_segment);
 
     return segments;
 }
