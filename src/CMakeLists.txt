@@ -3,6 +3,7 @@ target_sources(
 
     main.cpp
     string_utils.cpp
+    tests.cpp
 
     string_utils.hpp
 )
