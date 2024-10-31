@@ -92,7 +92,7 @@ DocumentTemplate::from_file(std::string_view file_path) {
             reading_header = true;
         } else if (statement_parts.at(0) == "footer" &&
                    statement_parts.at(1) == "{") {
-            reading_footer = false;
+            reading_footer = true;
         }
     }
 
