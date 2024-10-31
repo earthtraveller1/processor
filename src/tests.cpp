@@ -38,7 +38,7 @@ inline void run_test(std::string_view name, F function) {
         if ((a) != (b)) {                                                      \
             std::stringstream ss;                                              \
             ss << "Assertion '" << msg_a << " == " << msg_b << "' failed!";    \
-            return TestResult{.passed = false, .error_message = ss.str()};    \
+            return TestResult{.passed = false, .error_message = ss.str()};     \
         }                                                                      \
     } while (0)
 
@@ -47,6 +47,7 @@ inline void run_test(std::string_view name, F function) {
 
 #define TEST []() -> TestResult
 
+namespace neng {
 void run_tests() {
     run_test(
         "splitting strings", TEST {
@@ -62,3 +63,4 @@ void run_tests() {
             SUCCESS;
         });
 }
+} // namespace neng

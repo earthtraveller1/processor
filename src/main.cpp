@@ -1,4 +1,5 @@
 #include "string_utils.hpp"
+#include "tests.hpp"
 
 namespace fs = std::filesystem;
 
@@ -86,7 +87,6 @@ struct DocumentTemplate {
 };
 } // namespace
 
-void run_tests();
 
 int main(int argc, char **argv) {
     fs::path target_path{"."};
@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
         std::string_view sw_arg{*arg};
 
         if (sw_arg == "--test") {
-            run_tests();
+            neng::run_tests();
             return EXIT_SUCCESS;
         }
 
