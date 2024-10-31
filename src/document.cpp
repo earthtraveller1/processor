@@ -6,6 +6,19 @@ namespace neng {
 
 using namespace std::literals::string_literals;
 
+std::ostream& operator<<(std::ostream& os, Error error) {
+    switch (error) {
+    case Error::OK:
+        os << "OK";
+    case Error::FILE_OPEN_ERROR:
+        os << "FILE_OPEN_ERROR";
+    case Error::FILE_READ_ERROR:
+        os << "FILE_READ_ERROR";
+    }
+
+    return os;
+}
+
 std::string Paragraph::render_to_html(std::string_view paragraph_class) const {
     std::string opener;
     std::string closer;

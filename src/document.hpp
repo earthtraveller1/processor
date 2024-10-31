@@ -8,6 +8,8 @@ enum class Error {
     FILE_OPEN_ERROR = 2,
 };
 
+std::ostream& operator<<(std::ostream& os, Error error);
+
 enum class ParagraphType { NORMAL, H1, H2, H3 };
 
 struct Paragraph {
