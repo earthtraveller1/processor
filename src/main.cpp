@@ -46,7 +46,6 @@ struct Document {
 };
 
 struct DocumentTemplate {
-    std::string css_file;
     std::string title_class;
     std::string paragraph_class;
     std::string header;
@@ -60,7 +59,6 @@ struct DocumentTemplate {
             return {{}, Error::FILE_OPEN_ERROR};
         }
 
-        std::string css_file;
         std::string title_class;
         std::string paragraph_class;
         std::string header;
@@ -94,9 +92,7 @@ struct DocumentTemplate {
 
             const auto statement_parts = neng::split_string(line, "=");
 
-            if (statement_parts.at(0) == "css_file") {
-                css_file = statement_parts.at(1);
-            } else if (statement_parts.at(0) == "title_class") {
+            if (statement_parts.at(0) == "title_class") {
                 title_class = statement_parts.at(1);
             } else if (statement_parts.at(0) == "paragraph_class") {
                 paragraph_class = statement_parts.at(1);
@@ -111,7 +107,6 @@ struct DocumentTemplate {
 
         return {
             DocumentTemplate{
-                .css_file = css_file,
                 .title_class = title_class,
                 .paragraph_class = paragraph_class,
                 .header = header,
@@ -125,9 +120,11 @@ struct DocumentTemplate {
         std::string result;
 
         result.append("<body>");
+        result.append(header);
         for (const auto &paragraph : document.paragraphs) {
             result.append(paragraph.render_to_html(paragraph_class));
         }
+        result.append(footer);
         result.append("</body>");
 
         return result;
