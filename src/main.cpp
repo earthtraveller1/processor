@@ -1,6 +1,7 @@
 #include "string_utils.hpp"
 #include "tests.hpp"
 
+using namespace std::literals::string_literals;
 namespace fs = std::filesystem;
 
 namespace {
@@ -10,6 +11,40 @@ enum class Error {
     FILE_OPEN_ERROR = 2,
 };
 
+enum class ParagraphType { NORMAL, H1, H2, H3 };
+
+struct Paragraph {
+    ParagraphType type;
+    std::string content;
+
+    std::string render_to_html(std::string_view paragraph_class) const {
+        std::string opener;
+        std::string closer;
+        switch (type) {
+        case ParagraphType::NORMAL:
+            opener = "<p class=\""s + std::string(paragraph_class) + "\"/>"s;
+            closer = "</p>";
+        case ParagraphType::H1:
+            opener = "<h1 class=\"header1\">";
+            closer = "</h1>";
+        case ParagraphType::H2:
+            opener = "<h2 class=\"header2\">";
+            closer = "</h2>";
+        case ParagraphType::H3:
+            opener = "<h3 class=\"header3\">";
+            closer = "</h3>";
+        }
+
+        std::string result = opener + content + closer;
+
+        return result;
+    }
+};
+
+struct Document {
+    std::vector<Paragraph> paragraphs;
+};
+
 struct DocumentTemplate {
     std::string css_file;
     std::string title_class;
@@ -17,7 +52,8 @@ struct DocumentTemplate {
     std::string header;
     std::string footer;
 
-    std::tuple<DocumentTemplate, Error> from_file(std::string_view file_path) {
+    static std::tuple<DocumentTemplate, Error>
+    from_file(std::string_view file_path) {
         std::ifstream file(file_path.data());
 
         if (!file) {
@@ -84,9 +120,20 @@ struct DocumentTemplate {
             Error::OK,
         };
     }
+
+    std::string render_html_to_string(const Document &document) {
+        std::string result;
+
+        result.append("<body>");
+        for (const auto &paragraph : document.paragraphs) {
+            result.append(paragraph.render_to_html(paragraph_class));
+        }
+        result.append("</body>");
+
+        return result;
+    }
 };
 } // namespace
-
 
 int main(int argc, char **argv) {
     fs::path target_path{"."};
