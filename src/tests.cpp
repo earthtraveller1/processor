@@ -1,5 +1,7 @@
-#include "string_utils.hpp"
 #include <sstream>
+
+#include "string_utils.hpp"
+#include "document.hpp"
 
 struct TestResult {
     bool passed;
@@ -59,6 +61,21 @@ void run_tests() {
             for (int i = 0; i < expected.size(); i++) {
                 ASSERT_EQ(expected[i], results[i]);
             }
+
+            SUCCESS;
+        });
+
+    run_test(
+        "parsing basic templates", TEST {
+            using neng::DocumentTemplate;
+
+            const auto [templ, err] = DocumentTemplate::from_file("tests/basic.neng");
+            ASSERT_EQ(err, neng::Error::OK);
+
+            ASSERT_EQ(templ.title_class, "title");
+            ASSERT_EQ(templ.paragraph_class, "paragraph");
+            ASSERT_EQ(templ.header, "    <nav>The end of the world is upon us!</nav>");
+            ASSERT_EQ(templ.footer, "    <small>Yes, indeed!</small>");
 
             SUCCESS;
         });
