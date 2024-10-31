@@ -33,11 +33,11 @@ inline void run_test(std::string_view name, F function) {
         }                                                                      \
     } while (0)
 
-#define ASSERT_EQ(a, b, msg_a, msg_b)                                          \
+#define ASSERT_EQ(a, b)                                          \
     do {                                                                       \
         if ((a) != (b)) {                                                      \
             std::stringstream ss;                                              \
-            ss << "Assertion '" << msg_a << " == " << msg_b << "' failed!";    \
+            ss << "Assertion '" << (a) << " == " << (b) << "' failed!";    \
             return TestResult{.passed = false, .error_message = ss.str()};     \
         }                                                                      \
     } while (0)
@@ -57,7 +57,7 @@ void run_tests() {
             const auto results = neng::split_string(hello, ",");
 
             for (int i = 0; i < expected.size(); i++) {
-                ASSERT_EQ(expected[i], results[i], expected[i], results[i]);
+                ASSERT_EQ(expected[i], results[i]);
             }
 
             SUCCESS;
