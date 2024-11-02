@@ -107,7 +107,7 @@ DocumentTemplate::from_file(std::string_view file_path) {
     };
 }
 
-std::string DocumentTemplate::render_html_to_string(const Document &document) {
+std::string DocumentTemplate::render_html_to_string(const Document &document) const {
     std::string result;
 
     result.append("<body>");

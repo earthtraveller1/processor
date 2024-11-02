@@ -32,6 +32,6 @@ struct DocumentTemplate {
     static std::tuple<DocumentTemplate, Error>
     from_file(std::string_view file_path);
 
-    std::string render_html_to_string(const Document &document);
+    std::string render_html_to_string(const Document &document) const;
 };
 } // namespace neng
