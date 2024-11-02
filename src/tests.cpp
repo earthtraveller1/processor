@@ -1,7 +1,7 @@
 #include <sstream>
 
-#include "string_utils.hpp"
 #include "document.hpp"
+#include "string_utils.hpp"
 
 struct TestResult {
     bool passed;
@@ -35,11 +35,11 @@ inline void run_test(std::string_view name, F function) {
         }                                                                      \
     } while (0)
 
-#define ASSERT_EQ(a, b)                                          \
+#define ASSERT_EQ(a, b)                                                        \
     do {                                                                       \
         if ((a) != (b)) {                                                      \
             std::stringstream ss;                                              \
-            ss << "Assertion '" << (a) << " == " << (b) << "' failed!";    \
+            ss << "Assertion '" << (a) << " == " << (b) << "' failed!";        \
             return TestResult{.passed = false, .error_message = ss.str()};     \
         }                                                                      \
     } while (0)
@@ -69,13 +69,44 @@ void run_tests() {
         "parsing basic templates", TEST {
             using neng::DocumentTemplate;
 
-            const auto [templ, err] = DocumentTemplate::from_file("tests/basic.neng");
+            const auto [templ, err] =
+                DocumentTemplate::from_file("tests/basic.neng");
             ASSERT_EQ(err, neng::Error::OK);
 
             ASSERT_EQ(templ.title_class, "title");
             ASSERT_EQ(templ.paragraph_class, "paragraph");
-            ASSERT_EQ(templ.header, "    <nav>The end of the world is upon us!</nav>");
+            ASSERT_EQ(templ.header,
+                      "    <nav>The end of the world is upon us!</nav>");
             ASSERT_EQ(templ.footer, "    <small>Yes, indeed!</small>");
+
+            SUCCESS;
+        });
+
+    run_test(
+        "rendering basic template", TEST {
+            using neng::DocumentTemplate;
+            using neng::Document;
+
+            const auto [templ, err] =
+                DocumentTemplate::from_file("tests/basic.neng");
+            ASSERT_EQ(err, neng::Error::OK);
+
+            Document document;
+            document.paragraphs.push_back({
+                .type = ParagraphType::H1,
+                .content = "Hello!",
+            });
+            document.paragraphs.push_back({
+                .type = ParagraphType::NORMAL,
+                .content = "This is a test!",
+            });
+
+            const auto result = templ.render_html_to_string(document);
+            ASSERT_EQ(
+                result,
+                "<body>    <nav>The end of the world is upon us!</nav><h3 "
+                "class=\"header3\">Hello!</h3><h3 class=\"header3\">This "
+                "is a test!</h3>    <small>Yes, indeed!</small></body>");
 
             SUCCESS;
         });
