@@ -122,5 +122,15 @@ void run_tests() {
 
             SUCCESS;
         });
+
+    run_test("testing if lines are titles", TEST{
+        ASSERT(neng::is_line_title("# Hello!"));
+        ASSERT(neng::is_line_title("## Yes!"));
+        ASSERT(!neng::is_line_title("Bozo!"));
+        ASSERT(!neng::is_line_title("#Cringe"));
+
+        SUCCESS;
+    });
+
 }
 } // namespace neng
