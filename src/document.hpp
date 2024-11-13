@@ -10,6 +10,8 @@ enum class Error {
 
 std::ostream& operator<<(std::ostream& os, Error error);
 
+bool is_line_title(std::string_view line);
+
 enum class ParagraphType { NORMAL, H1, H2, H3 };
 
 struct Paragraph {
@@ -21,6 +23,8 @@ struct Paragraph {
 
 struct Document {
     std::vector<Paragraph> paragraphs;
+
+    static Document parse_document(std::string content);
 };
 
 struct DocumentTemplate {

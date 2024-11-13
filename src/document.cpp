@@ -10,13 +10,36 @@ std::ostream& operator<<(std::ostream& os, Error error) {
     switch (error) {
     case Error::OK:
         os << "OK";
+        break;
     case Error::FILE_OPEN_ERROR:
         os << "FILE_OPEN_ERROR";
+        break;
     case Error::FILE_READ_ERROR:
         os << "FILE_READ_ERROR";
+        break;
     }
 
     return os;
+}
+
+bool is_line_title(std::string_view line) {
+    if (!line.starts_with('#')) {
+        return false;
+    }
+
+    char previous_char = 0;
+    for (auto character : line) {
+        if (character != '#') {
+            if (character == ' ') {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        previous_char = character;
+    }
+
+    return false;
 }
 
 std::string Paragraph::render_to_html(std::string_view paragraph_class) const {
@@ -26,15 +49,19 @@ std::string Paragraph::render_to_html(std::string_view paragraph_class) const {
     case ParagraphType::NORMAL:
         opener = "<p class=\""s + std::string(paragraph_class) + "\"/>"s;
         closer = "</p>";
+        break;
     case ParagraphType::H1:
         opener = "<h1 class=\"header1\">";
         closer = "</h1>";
+        break;
     case ParagraphType::H2:
         opener = "<h2 class=\"header2\">";
         closer = "</h2>";
+        break;
     case ParagraphType::H3:
         opener = "<h3 class=\"header3\">";
         closer = "</h3>";
+        break;
     }
 
     std::string result = opener + content + closer;
@@ -104,6 +131,49 @@ DocumentTemplate::from_file(std::string_view file_path) {
             .footer = footer,
         },
         Error::OK,
+    };
+}
+
+Document Document::parse_document(std::string document) {
+    std::vector<Paragraph> paragraphs;
+    std::string current_paragraph;
+
+    const auto lines = split_string(document, "\n");
+
+    for (const auto &line : lines) {
+        bool line_blank = true;
+        for (auto character : line) {
+            if (!std::isspace(character)) {
+                line_blank = false;
+                break;
+            }
+        }
+
+        if (line_blank) {
+            paragraphs.push_back(Paragraph{
+                .type = ParagraphType::NORMAL,
+                .content = current_paragraph,
+            });
+            current_paragraph = "";
+            continue;
+        }
+
+        const auto trimmed_line = trim_string(line);
+        if (is_line_title(trimmed_line)) {
+            paragraphs.push_back(Paragraph{.type = ParagraphType::NORMAL,
+                                           .content = current_paragraph});
+            current_paragraph = trimmed_line;
+            paragraphs.push_back(Paragraph{.type = ParagraphType::H1,
+                                           .content = current_paragraph});
+            current_paragraph = "";
+            continue;
+        }
+
+        current_paragraph += trim_string(line) + " ";
+    }
+
+    return Document {
+        .paragraphs = paragraphs
     };
 }
 
