@@ -54,13 +54,14 @@ std::string trim_string_end(std::string_view string) {
     std::string result;
 
     size_t trim_location = 0;
-    for (size_t i = string.size() - 1; i >= 0; i--) {
+    for (int32_t i = string.size() - 1; i >= 0; i--) {
         if (!std::isspace(string[i])) {
             trim_location = i;
+            break;
         }
     }
 
-    result = string.substr(0, trim_location);
+    result = string.substr(0, trim_location+1);
 
     return result;
 }
