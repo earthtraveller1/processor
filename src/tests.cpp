@@ -117,9 +117,8 @@ void run_tests() {
             const auto result = templ.render_html_to_string(document);
             ASSERT_EQ(
                 result,
-                "<body>    <nav>The end of the world is upon us!</nav><h3 "
-                "class=\"header3\">Hello!</h3><h3 class=\"header3\">This "
-                "is a test!</h3>    <small>Yes, indeed!</small></body>");
+                R"html(<body>    <nav>The end of the world is upon us!</nav><h1 class="header1">Hello!</h1><p class="paragraph"/>This is a test!</p>    <small>Yes, indeed!</small></body>)html"
+            );
 
             SUCCESS;
         });
