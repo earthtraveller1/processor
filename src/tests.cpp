@@ -82,6 +82,19 @@ void run_tests() {
             SUCCESS;
         });
 
+    run_test("trimming strings", TEST{
+        using neng::trim_string_end;
+        using neng::trim_string_start;
+
+        auto result = trim_string_start("      Neng is cringe!");
+        ASSERT_EQ(result, "Neng is cringe!");
+
+        auto result2 = trim_string_end("Tony is based!        ");
+        ASSERT_EQ(result2, "Tony is based!");
+
+        SUCCESS;
+        });
+
     run_test(
         "rendering basic template", TEST {
             using neng::DocumentTemplate;
