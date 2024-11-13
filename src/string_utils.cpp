@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "string_utils.hpp"
 
 namespace neng {
@@ -29,5 +31,37 @@ std::vector<std::string> split_string(std::string_view string,
     segments.push_back(current_segment);
 
     return segments;
+}
+
+std::string trim_string_start(std::string_view string) {
+    std::string result;
+
+    bool trimming = true;
+    for (auto character : string) {
+        if (!std::isspace(character)) {
+            trimming = false;
+        }
+
+        if (!trimming) {
+            result.push_back(character);
+        }
+    }
+
+    return result;
+}
+
+std::string trim_string_end(std::string_view string) {
+    std::string result;
+
+    size_t trim_location = 0;
+    for (size_t i = string.size() - 1; i >= 0; i--) {
+        if (!std::isspace(string[i])) {
+            trim_location = i;
+        }
+    }
+
+    result = string.substr(0, trim_location);
+
+    return result;
 }
 } // namespace neng
