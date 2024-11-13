@@ -65,4 +65,8 @@ std::string trim_string_end(std::string_view string) {
 
     return result;
 }
+
+std::string trim_string(std::string_view string) {
+    return trim_string_end(trim_string_start(string));
+}
 } // namespace neng
