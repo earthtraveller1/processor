@@ -23,7 +23,7 @@ std::ostream &operator<<(std::ostream &os, Error error) {
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, ParagraphType paragraph_type) {
+std::ostream &operator<<(std::ostream &os, ParagraphType paragraph_type) {
     switch (paragraph_type) {
     case ParagraphType::H1:
         os << "ParagraphType::H1";
@@ -154,6 +154,47 @@ DocumentTemplate::from_file(std::string_view file_path) {
     };
 }
 
+void Document::parse_document_line(std::string_view line,
+                                   std::string &current_paragraph,
+                                   std::vector<Paragraph> &paragraphs) {
+    bool line_blank = true;
+    for (auto character : line) {
+        if (!std::isspace(character)) {
+            line_blank = false;
+            break;
+        }
+    }
+
+    if (line_blank) {
+        if (current_paragraph != "") {
+            paragraphs.push_back(Paragraph{
+                .type = ParagraphType::NORMAL,
+                .content = trim_string(current_paragraph),
+            });
+        }
+        current_paragraph = "";
+        return;
+    }
+
+    const auto trimmed_line = trim_string(line);
+    if (is_line_title(trimmed_line)) {
+        if (current_paragraph != "") {
+            paragraphs.push_back(
+                Paragraph{.type = ParagraphType::NORMAL,
+                          .content = trim_string(current_paragraph)});
+        }
+        current_paragraph = trimmed_line;
+        paragraphs.push_back(
+            Paragraph{.type = ParagraphType::H1,
+                      .content = trim_string(current_paragraph.substr(
+                          current_paragraph.find_first_of(' ') + 1))});
+        current_paragraph = "";
+        return;
+    }
+
+    current_paragraph += trim_string(line) + " ";
+}
+
 Document Document::parse_document(std::string_view document) {
     std::vector<Paragraph> paragraphs;
     std::string current_paragraph;
@@ -161,36 +202,13 @@ Document Document::parse_document(std::string_view document) {
     const auto lines = split_string(document, "\n");
 
     for (const auto &line : lines) {
-        bool line_blank = true;
-        for (auto character : line) {
-            if (!std::isspace(character)) {
-                line_blank = false;
-                break;
-            }
-        }
-
-        if (line_blank) {
-            paragraphs.push_back(Paragraph{
-                .type = ParagraphType::NORMAL,
-                .content = current_paragraph,
-            });
-            current_paragraph = "";
-            continue;
-        }
-
-        const auto trimmed_line = trim_string(line);
-        if (is_line_title(trimmed_line)) {
-            paragraphs.push_back(Paragraph{.type = ParagraphType::NORMAL,
-                                           .content = current_paragraph});
-            current_paragraph = trimmed_line;
-            paragraphs.push_back(Paragraph{.type = ParagraphType::H1,
-                                           .content = current_paragraph});
-            current_paragraph = "";
-            continue;
-        }
-
-        current_paragraph += trim_string(line) + " ";
+        parse_document_line(line, current_paragraph, paragraphs);
     }
+
+    paragraphs.push_back(Paragraph {
+        .type = ParagraphType::NORMAL,
+        .content = trim_string(current_paragraph),
+    });
 
     return Document{.paragraphs = paragraphs};
 }
@@ -202,16 +220,22 @@ Document::parse_document_from_file(std::string_view file_path) {
         return {{}, Error::FILE_OPEN_ERROR};
     }
 
-    std::string contents;
+    std::vector<Paragraph> paragraphs;
+    std::string current_paragraph;
 
     while (!file.eof()) {
         std::string line;
         std::getline(file, line);
 
-        contents += line;
+        parse_document_line(line, current_paragraph, paragraphs);
     }
 
-    return {parse_document(contents), Error::OK};
+    paragraphs.push_back(Paragraph {
+        .type = ParagraphType::NORMAL,
+        .content = trim_string(current_paragraph),
+    });
+
+    return {{paragraphs}, Error::OK};
 }
 
 std::string

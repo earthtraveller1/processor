@@ -8,13 +8,13 @@ enum class Error {
     FILE_OPEN_ERROR = 2,
 };
 
-std::ostream& operator<<(std::ostream& os, Error error);
+std::ostream &operator<<(std::ostream &os, Error error);
 
 bool is_line_title(std::string_view line);
 
 enum class ParagraphType { NORMAL, H1, H2, H3 };
 
-std::ostream& operator<<(std::ostream& os, ParagraphType paragraph_type);
+std::ostream &operator<<(std::ostream &os, ParagraphType paragraph_type);
 
 struct Paragraph {
     ParagraphType type;
@@ -26,9 +26,14 @@ struct Paragraph {
 struct Document {
     std::vector<Paragraph> paragraphs;
 
+    static void parse_document_line(std::string_view line,
+                                    std::string &current_paragraph,
+                                    std::vector<Paragraph> &paragraphs);
+
     static Document parse_document(std::string_view content);
 
-    static std::tuple<Document, Error> parse_document_from_file(std::string_view file_path);
+    static std::tuple<Document, Error>
+    parse_document_from_file(std::string_view file_path);
 };
 
 struct DocumentTemplate {
