@@ -1,12 +1,13 @@
 #include "document.hpp"
 
 #include "string_utils.hpp"
+#include <fstream>
 
 namespace neng {
 
 using namespace std::literals::string_literals;
 
-std::ostream& operator<<(std::ostream& os, Error error) {
+std::ostream &operator<<(std::ostream &os, Error error) {
     switch (error) {
     case Error::OK:
         os << "OK";
@@ -172,12 +173,30 @@ Document Document::parse_document(std::string document) {
         current_paragraph += trim_string(line) + " ";
     }
 
-    return Document {
-        .paragraphs = paragraphs
-    };
+    return Document{.paragraphs = paragraphs};
 }
 
-std::string DocumentTemplate::render_html_to_string(const Document &document) const {
+std::tuple<Document, Error>
+Document::parse_document_from_file(std::string_view file_path) {
+    std::ifstream file(file_path.data());
+    if (!file.is_open()) {
+        return {{}, Error::FILE_OPEN_ERROR};
+    }
+
+    std::string contents;
+
+    while (!file.eof()) {
+        std::string line;
+        std::getline(file, line);
+
+        contents += line;
+    }
+
+    return {parse_document(contents), Error::OK};
+}
+
+std::string
+DocumentTemplate::render_html_to_string(const Document &document) const {
     std::string result;
 
     result.append("<body>");

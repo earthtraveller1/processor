@@ -25,6 +25,8 @@ struct Document {
     std::vector<Paragraph> paragraphs;
 
     static Document parse_document(std::string content);
+
+    static std::tuple<Document, Error> parse_document_from_file(std::string_view file_path);
 };
 
 struct DocumentTemplate {
