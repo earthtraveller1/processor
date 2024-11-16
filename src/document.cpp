@@ -23,6 +23,25 @@ std::ostream &operator<<(std::ostream &os, Error error) {
     return os;
 }
 
+std::ostream& operator<<(std::ostream& os, ParagraphType paragraph_type) {
+    switch (paragraph_type) {
+    case ParagraphType::H1:
+        os << "ParagraphType::H1";
+        break;
+    case ParagraphType::H2:
+        os << "ParagraphType::H2";
+        break;
+    case ParagraphType::H3:
+        os << "ParagraphType::H3";
+        break;
+    case ParagraphType::NORMAL:
+        os << "ParagraphType::NORMAL";
+        break;
+    }
+
+    return os;
+}
+
 bool is_line_title(std::string_view line) {
     if (!line.starts_with('#')) {
         return false;

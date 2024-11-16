@@ -14,6 +14,8 @@ bool is_line_title(std::string_view line);
 
 enum class ParagraphType { NORMAL, H1, H2, H3 };
 
+std::ostream& operator<<(std::ostream& os, ParagraphType paragraph_type);
+
 struct Paragraph {
     ParagraphType type;
     std::string content;
