@@ -135,7 +135,7 @@ DocumentTemplate::from_file(std::string_view file_path) {
     };
 }
 
-Document Document::parse_document(std::string document) {
+Document Document::parse_document(std::string_view document) {
     std::vector<Paragraph> paragraphs;
     std::string current_paragraph;
 
