@@ -82,17 +82,18 @@ void run_tests() {
             SUCCESS;
         });
 
-    run_test("trimming strings", TEST{
-        using neng::trim_string_end;
-        using neng::trim_string_start;
+    run_test(
+        "trimming strings", TEST {
+            using neng::trim_string_end;
+            using neng::trim_string_start;
 
-        auto result = trim_string_start("      Neng is cringe!");
-        ASSERT_EQ(result, "Neng is cringe!");
+            auto result = trim_string_start("      Neng is cringe!");
+            ASSERT_EQ(result, "Neng is cringe!");
 
-        auto result2 = trim_string_end("Tony is based!        ");
-        ASSERT_EQ(result2, "Tony is based!");
+            auto result2 = trim_string_end("Tony is based!        ");
+            ASSERT_EQ(result2, "Tony is based!");
 
-        SUCCESS;
+            SUCCESS;
         });
 
     run_test(
@@ -117,20 +118,35 @@ void run_tests() {
             const auto result = templ.render_html_to_string(document);
             ASSERT_EQ(
                 result,
-                R"html(<body>    <nav>The end of the world is upon us!</nav><h1 class="header1">Hello!</h1><p class="paragraph"/>This is a test!</p>    <small>Yes, indeed!</small></body>)html"
-            );
+                R"html(<body>    <nav>The end of the world is upon us!</nav><h1 class="header1">Hello!</h1><p class="paragraph"/>This is a test!</p>    <small>Yes, indeed!</small></body>)html");
 
             SUCCESS;
         });
 
-    run_test("testing if lines are titles", TEST{
-        ASSERT(neng::is_line_title("# Hello!"));
-        ASSERT(neng::is_line_title("## Yes!"));
-        ASSERT(!neng::is_line_title("Bozo!"));
-        ASSERT(!neng::is_line_title("#Cringe"));
+    run_test(
+        "testing if lines are titles", TEST {
+            ASSERT(neng::is_line_title("# Hello!"));
+            ASSERT(neng::is_line_title("## Yes!"));
+            ASSERT(!neng::is_line_title("Bozo!"));
+            ASSERT(!neng::is_line_title("#Cringe"));
 
-        SUCCESS;
-    });
+            SUCCESS;
+        });
 
+    run_test(
+        "parsing markdown documents", TEST {
+            const auto [document, error] =
+                Document::parse_document_from_file("tests/basic.md");
+            ASSERT_EQ(error, Error::OK);
+
+            ASSERT_EQ(document.paragraphs[0].content, "Hello");
+            ASSERT_EQ(document.paragraphs[0].type, ParagraphType::H1);
+            ASSERT_EQ(document.paragraphs[1].content, "This is a basic test! Welcome to my show!");
+            ASSERT_EQ(document.paragraphs[1].type, ParagraphType::NORMAL);
+            ASSERT_EQ(document.paragraphs[2].content, "Neng Li is the President of China!");
+            ASSERT_EQ(document.paragraphs[2].type, ParagraphType::NORMAL);
+
+            SUCCESS;
+        });
 }
 } // namespace neng
