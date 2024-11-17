@@ -11,4 +11,8 @@ target_sources(
     tests.hpp
 )
 
+if (PROCESSOR_BUILD_TESTS)
+    target_sources(processor PRIVATE tests.cpp tests.hpp)
+endif()
+
 target_precompile_headers(processor PRIVATE pch.hpp)

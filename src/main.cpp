@@ -13,10 +13,12 @@ int main(int argc, char **argv) {
     for (char **arg = argv + 1; arg < argv + argc; arg++) {
         std::string_view sw_arg{*arg};
 
+        #ifdef PROCESSOR_BUILD_TESTS
         if (sw_arg == "--test") {
             neng::run_tests();
             return EXIT_SUCCESS;
         }
+        #endif
 
         if (arg > argv + 1) {
             std::string_view previous_arg{*(arg - 1)};
