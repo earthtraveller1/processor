@@ -142,6 +142,7 @@ void run_tests() {
 
             ASSERT_EQ(document.paragraphs[0].content, "Hello");
             ASSERT_EQ(document.paragraphs[0].type, ParagraphType::HEADER);
+            ASSERT_EQ(document.paragraphs[0].header_level, 1);
             ASSERT_EQ(document.paragraphs[1].content,
                       "This is a basic test! Welcome to my show!");
             ASSERT_EQ(document.paragraphs[1].type, ParagraphType::NORMAL);

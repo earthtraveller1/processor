@@ -179,17 +179,21 @@ void Document::parse_document_line(std::string_view line,
     }
 
     const auto trimmed_line = trim_string(line);
-    if (is_line_title(trimmed_line)) {
+    const auto header_level = count_title_level(trimmed_line);
+    if (header_level > 0) {
         if (current_paragraph != "") {
-            paragraphs.push_back(
-                Paragraph{.type = ParagraphType::NORMAL,
-                          .content = trim_string(current_paragraph)});
+            paragraphs.push_back(Paragraph{
+                .type = ParagraphType::NORMAL,
+                .content = trim_string(current_paragraph),
+            });
         }
         current_paragraph = trimmed_line;
-        paragraphs.push_back(
-            Paragraph{.type = ParagraphType::HEADER,
-                      .content = trim_string(current_paragraph.substr(
-                          current_paragraph.find_first_of(' ') + 1))});
+        paragraphs.push_back(Paragraph{
+            .type = ParagraphType::HEADER,
+            .content = trim_string(current_paragraph.substr(
+                current_paragraph.find_first_of(' ') + 1)),
+            .header_level = header_level,
+        });
         current_paragraph = "";
         return;
     }
@@ -207,7 +211,7 @@ Document Document::parse_document(std::string_view document) {
         parse_document_line(line, current_paragraph, paragraphs);
     }
 
-    paragraphs.push_back(Paragraph {
+    paragraphs.push_back(Paragraph{
         .type = ParagraphType::NORMAL,
         .content = trim_string(current_paragraph),
     });
@@ -232,7 +236,7 @@ Document::parse_document_from_file(std::string_view file_path) {
         parse_document_line(line, current_paragraph, paragraphs);
     }
 
-    paragraphs.push_back(Paragraph {
+    paragraphs.push_back(Paragraph{
         .type = ParagraphType::NORMAL,
         .content = trim_string(current_paragraph),
     });
