@@ -142,12 +142,22 @@ void run_tests() {
 
             ASSERT_EQ(document.paragraphs[0].content, "Hello");
             ASSERT_EQ(document.paragraphs[0].type, ParagraphType::HEADER);
-            ASSERT_EQ(document.paragraphs[1].content, "This is a basic test! Welcome to my show!");
+            ASSERT_EQ(document.paragraphs[1].content,
+                      "This is a basic test! Welcome to my show!");
             ASSERT_EQ(document.paragraphs[1].type, ParagraphType::NORMAL);
-            ASSERT_EQ(document.paragraphs[2].content, "Neng Li is the President of China!");
+            ASSERT_EQ(document.paragraphs[2].content,
+                      "Neng Li is the President of China!");
             ASSERT_EQ(document.paragraphs[2].type, ParagraphType::NORMAL);
 
             SUCCESS;
         });
+
+    run_test("obtaining header levels", TEST { 
+        ASSERT_EQ(count_title_level("## Hello!"), 2);
+        ASSERT_EQ(count_title_level("Yes, indeed!"), 0);
+        ASSERT_EQ(count_title_level("# Yes!"), 1);
+        ASSERT_EQ(count_title_level("### Neng Li"), 3);
+        SUCCESS; 
+    });
 }
 } // namespace neng
