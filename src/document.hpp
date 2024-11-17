@@ -15,13 +15,14 @@ bool is_line_title(std::string_view line);
 // The assumption is that the line is trimmed (so no leading whitespace).
 uint8_t count_title_level(std::string_view line);
 
-enum class ParagraphType { NORMAL, H1, H2, H3 };
+enum class ParagraphType { NORMAL, HEADER };
 
 std::ostream &operator<<(std::ostream &os, ParagraphType paragraph_type);
 
 struct Paragraph {
     ParagraphType type;
     std::string content;
+    uint8_t header_level{0};
 
     std::string render_to_html(std::string_view paragraph_class) const;
 };

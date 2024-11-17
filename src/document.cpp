@@ -25,15 +25,8 @@ std::ostream &operator<<(std::ostream &os, Error error) {
 
 std::ostream &operator<<(std::ostream &os, ParagraphType paragraph_type) {
     switch (paragraph_type) {
-    case ParagraphType::H1:
-        os << "ParagraphType::H1";
-        break;
-    case ParagraphType::H2:
-        os << "ParagraphType::H2";
-        break;
-    case ParagraphType::H3:
-        os << "ParagraphType::H3";
-        break;
+    case ParagraphType::HEADER:
+        os << "ParagraphType::HEADER";
     case ParagraphType::NORMAL:
         os << "ParagraphType::NORMAL";
         break;
@@ -87,17 +80,9 @@ std::string Paragraph::render_to_html(std::string_view paragraph_class) const {
         opener = "<p class=\""s + std::string(paragraph_class) + "\"/>"s;
         closer = "</p>";
         break;
-    case ParagraphType::H1:
-        opener = "<h1 class=\"header1\">";
+    case ParagraphType::HEADER:
+        opener = "<h"s + std::to_string(header_level) + " class=\"header1\">"s;
         closer = "</h1>";
-        break;
-    case ParagraphType::H2:
-        opener = "<h2 class=\"header2\">";
-        closer = "</h2>";
-        break;
-    case ParagraphType::H3:
-        opener = "<h3 class=\"header3\">";
-        closer = "</h3>";
         break;
     }
 
@@ -202,7 +187,7 @@ void Document::parse_document_line(std::string_view line,
         }
         current_paragraph = trimmed_line;
         paragraphs.push_back(
-            Paragraph{.type = ParagraphType::H1,
+            Paragraph{.type = ParagraphType::HEADER,
                       .content = trim_string(current_paragraph.substr(
                           current_paragraph.find_first_of(' ') + 1))});
         current_paragraph = "";
