@@ -62,6 +62,23 @@ bool is_line_title(std::string_view line) {
     return false;
 }
 
+uint8_t count_title_level(std::string_view line) {
+    if (!is_line_title(line)) {
+        return 0;
+    }
+
+    int level = 0;
+    for (auto character : line) {
+        if (character != '#') {
+            break;
+        }
+
+        level += 1;
+    }
+
+    return level;
+}
+
 std::string Paragraph::render_to_html(std::string_view paragraph_class) const {
     std::string opener;
     std::string closer;
