@@ -7,7 +7,7 @@ namespace {
 } // namespace
 
 int main(int argc, char **argv) {
-    fs::path target_path{"."};
+    fs::path target_path{"./pages"};
     fs::path output_path{"./out"};
 
     for (char **arg = argv + 1; arg < argv + argc; arg++) {
