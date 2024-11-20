@@ -51,6 +51,9 @@ inline void run_test(std::string_view name, F function) {
 
 namespace neng {
 void run_tests() {
+    std::cout << "[INFO]: Working directory at "
+              << std::filesystem::current_path() << '\n';
+
     run_test(
         "splitting strings", TEST {
             std::string hello = "Yes,No,You,Bad";
