@@ -70,10 +70,10 @@ void run_tests() {
 
     run_test(
         "parsing basic templates", TEST {
-            using neng::DocumentTemplate;
+            using neng::DocumentConfiguration;
 
             const auto [templ, err] =
-                DocumentTemplate::from_file("tests/basic.neng");
+                DocumentConfiguration::from_file("tests/basic.neng");
             ASSERT_EQ(err, neng::Error::OK);
 
             ASSERT_EQ(templ.title_class, "title");
@@ -101,11 +101,11 @@ void run_tests() {
 
     run_test(
         "rendering basic template", TEST {
-            using neng::DocumentTemplate;
+            using neng::DocumentConfiguration;
             using neng::Document;
 
             const auto [templ, err] =
-                DocumentTemplate::from_file("tests/basic.neng");
+                DocumentConfiguration::from_file("tests/basic.neng");
             ASSERT_EQ(err, neng::Error::OK);
 
             Document document;

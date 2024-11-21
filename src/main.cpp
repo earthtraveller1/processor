@@ -47,10 +47,10 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
 
-    using neng::DocumentTemplate;
+    using neng::DocumentConfiguration;
     using neng::Error;
 
-    const auto [document_template, error] = DocumentTemplate::from_file(template_path.string());
+    const auto [document_template, error] = DocumentConfiguration::from_file(template_path.string());
     if (error != Error::OK) {
         std::cerr << "[ERROR]: Failed to parse the template: " << error << '\n';
         return EXIT_FAILURE;

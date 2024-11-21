@@ -27,6 +27,7 @@ std::ostream &operator<<(std::ostream &os, ParagraphType paragraph_type) {
     switch (paragraph_type) {
     case ParagraphType::HEADER:
         os << "ParagraphType::HEADER";
+        break;
     case ParagraphType::NORMAL:
         os << "ParagraphType::NORMAL";
         break;
@@ -91,8 +92,8 @@ std::string Paragraph::render_to_html(std::string_view paragraph_class) const {
     return result;
 }
 
-std::tuple<DocumentTemplate, Error>
-DocumentTemplate::from_file(std::string_view file_path) {
+std::tuple<DocumentConfiguration, Error>
+DocumentConfiguration::from_file(std::string_view file_path) {
     std::ifstream file(file_path.data());
 
     if (!file) {
@@ -101,34 +102,10 @@ DocumentTemplate::from_file(std::string_view file_path) {
 
     std::string title_class;
     std::string paragraph_class;
-    std::string header;
-    std::string footer;
-
-    bool reading_header = false, reading_footer = false;
 
     while (!file.eof()) {
         std::string line;
         std::getline(file, line);
-
-        if (reading_header) {
-            if (line != "}") {
-                header.append(line);
-            } else {
-                reading_header = false;
-            }
-
-            continue;
-        }
-
-        if (reading_footer) {
-            if (line != "}") {
-                footer.append(line);
-            } else {
-                reading_footer = false;
-            }
-
-            continue;
-        }
 
         const auto statement_parts = neng::split_string(line, "=");
 
@@ -136,21 +113,13 @@ DocumentTemplate::from_file(std::string_view file_path) {
             title_class = statement_parts.at(1);
         } else if (statement_parts.at(0) == "paragraph_class") {
             paragraph_class = statement_parts.at(1);
-        } else if (statement_parts.at(0) == "header" &&
-                   statement_parts.at(1) == "{") {
-            reading_header = true;
-        } else if (statement_parts.at(0) == "footer" &&
-                   statement_parts.at(1) == "{") {
-            reading_footer = true;
         }
     }
 
     return {
-        DocumentTemplate{
+        DocumentConfiguration{
             .title_class = title_class,
             .paragraph_class = paragraph_class,
-            .header = header,
-            .footer = footer,
         },
         Error::OK,
     };
@@ -245,7 +214,7 @@ Document::parse_document_from_file(std::string_view file_path) {
 }
 
 std::string
-DocumentTemplate::render_html_to_string(const Document &document) const {
+DocumentConfiguration::render_html_to_string(const Document &document) const {
     std::string result;
 
     result.append("<body>");

@@ -40,15 +40,14 @@ struct Document {
     parse_document_from_file(std::string_view file_path);
 };
 
-struct DocumentTemplate {
+struct DocumentConfiguration {
     std::string title_class;
     std::string paragraph_class;
-    std::string header;
-    std::string footer;
 
-    static std::tuple<DocumentTemplate, Error>
+    static std::tuple<DocumentConfiguration, Error>
     from_file(std::string_view file_path);
 
     std::string render_html_to_string(const Document &document) const;
 };
+
 } // namespace neng
