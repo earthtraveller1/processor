@@ -218,11 +218,9 @@ DocumentConfiguration::render_html_to_string(const Document &document) const {
     std::string result;
 
     result.append("<body>");
-    result.append(header);
     for (const auto &paragraph : document.paragraphs) {
         result.append(paragraph.render_to_html(paragraph_class));
     }
-    result.append(footer);
     result.append("</body>");
 
     return result;

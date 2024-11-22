@@ -78,9 +78,6 @@ void run_tests() {
 
             ASSERT_EQ(templ.title_class, "title");
             ASSERT_EQ(templ.paragraph_class, "paragraph");
-            ASSERT_EQ(templ.header,
-                      "    <nav>The end of the world is upon us!</nav>");
-            ASSERT_EQ(templ.footer, "    <small>Yes, indeed!</small>");
 
             SUCCESS;
         });
@@ -122,7 +119,7 @@ void run_tests() {
             const auto result = templ.render_html_to_string(document);
             ASSERT_EQ(
                 result,
-                R"html(<body>    <nav>The end of the world is upon us!</nav><h1 class="header1">Hello!</h1><p class="paragraph"/>This is a test!</p>    <small>Yes, indeed!</small></body>)html");
+                R"html(<body><h1 class="header1">Hello!</h1><p class="paragraph"/>This is a test!</p></body>)html");
 
             SUCCESS;
         });
