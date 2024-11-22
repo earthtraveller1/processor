@@ -226,4 +226,47 @@ DocumentConfiguration::render_html_to_string(const Document &document) const {
     return result;
 }
 
+std::tuple<BasicDocumentTemplate, Error>
+BasicDocumentTemplate::from_file(const std::filesystem::path &path) {
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        return {{}, Error::FILE_OPEN_ERROR};
+    }
+
+    std::string before;
+    std::string after;
+
+    bool at_before = true;
+
+    while (!file.eof()) {
+        std::string line;
+        std::getline(file, line);
+
+        const std::string_view slot_literal = "${{slot}}";
+        const auto slot_position = line.find("${{slot}}");
+        if (slot_position == std::string::npos && at_before) {
+            before += line;
+            continue;
+        }
+
+        if (!at_before) {
+            std::cerr << "[ERROR]: The slot is found too many times! You can't "
+                         "have two slots in a template!\n";
+            return {{}, Error::TOO_MANY_SLOTS_ERROR};
+        }
+
+        before += line.substr(0, slot_position - 1);
+        at_before = false;
+        after += line.substr(slot_position + slot_literal.size());
+    }
+
+    return {
+        BasicDocumentTemplate{
+            .before = before,
+            .after = after,
+        },
+        Error::OK,
+    };
+}
+
 } // namespace neng

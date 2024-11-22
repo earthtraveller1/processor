@@ -6,6 +6,7 @@ enum class Error {
     OK = 0,
     FILE_READ_ERROR = 1,
     FILE_OPEN_ERROR = 2,
+    TOO_MANY_SLOTS_ERROR = 3,
 };
 
 std::ostream &operator<<(std::ostream &os, Error error);
@@ -48,6 +49,15 @@ struct DocumentConfiguration {
     from_file(std::string_view file_path);
 
     std::string render_html_to_string(const Document &document) const;
+};
+
+struct BasicDocumentTemplate {
+    std::string before;
+    std::string after;
+
+    static std::tuple<BasicDocumentTemplate, Error> from_file(const std::filesystem::path& path);
+
+    std::string insert_body(std::string_view result) const;
 };
 
 } // namespace neng
