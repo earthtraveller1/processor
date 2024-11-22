@@ -18,6 +18,9 @@ std::ostream &operator<<(std::ostream &os, Error error) {
     case Error::FILE_READ_ERROR:
         os << "FILE_READ_ERROR";
         break;
+    case Error::TOO_MANY_SLOTS_ERROR:
+        os << "TOO_MANY_SLOTS_ERROR";
+        break;
     }
 
     return os;
