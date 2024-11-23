@@ -292,4 +292,9 @@ BasicDocumentTemplate::from_file(const std::filesystem::path &path) {
     };
 }
 
+
+std::string BasicDocumentTemplate::insert_body(std::string_view result) const {
+    return before + ' ' + std::string(result) + ' ' + after;
+}
+
 } // namespace neng
