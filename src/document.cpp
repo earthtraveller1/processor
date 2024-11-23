@@ -79,17 +79,22 @@ uint8_t count_title_level(std::string_view line) {
     return level;
 }
 
-std::string Paragraph::render_to_html(std::string_view paragraph_class) const {
+std::string Paragraph::render_to_html(std::string_view paragraph_class,
+                                      std::string_view title_class) const {
     std::string opener;
     std::string closer;
     switch (type) {
     case ParagraphType::NORMAL:
-        opener = "<p class=\""s + std::string(paragraph_class) + "\"/>"s;
+        opener = "<p class=\""s + std::string(paragraph_class) + "\">"s;
         closer = "</p>";
         break;
     case ParagraphType::HEADER:
-        opener = "<h"s + std::to_string(header_level) + " class=\"header1\">"s;
-        closer = "</h1>";
+        opener = "<h"s + std::to_string(header_level);
+        if (header_level == 1) {
+            opener += "class=\"" + std::string(title_class) + "\"";
+        }
+        opener += '>';
+        closer = "</h"s + std::to_string(header_level) + ">";
         break;
     }
 
@@ -242,7 +247,7 @@ DocumentConfiguration::render_html_to_string(const Document &document) const {
 
     result.append("<body>");
     for (const auto &paragraph : document.paragraphs) {
-        result.append(paragraph.render_to_html(paragraph_class));
+        result.append(paragraph.render_to_html(paragraph_class, title_class));
     }
     result.append("</body>");
 
@@ -296,7 +301,6 @@ BasicDocumentTemplate::from_file(const std::filesystem::path &path) {
         Error::OK,
     };
 }
-
 
 std::string BasicDocumentTemplate::insert_body(std::string_view result) const {
     return before + ' ' + std::string(result) + ' ' + after;

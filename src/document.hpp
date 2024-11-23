@@ -26,7 +26,8 @@ struct Paragraph {
     std::string content;
     uint8_t header_level{0};
 
-    std::string render_to_html(std::string_view paragraph_class) const;
+    std::string render_to_html(std::string_view paragraph_class,
+                               std::string_view title_class) const;
 };
 
 struct Document {
@@ -56,7 +57,8 @@ struct BasicDocumentTemplate {
     std::string before;
     std::string after;
 
-    static std::tuple<BasicDocumentTemplate, Error> from_file(const std::filesystem::path& path);
+    static std::tuple<BasicDocumentTemplate, Error>
+    from_file(const std::filesystem::path &path);
 
     std::string insert_body(std::string_view result) const;
 };
