@@ -153,12 +153,25 @@ void run_tests() {
             SUCCESS;
         });
 
-    run_test("obtaining header levels", TEST { 
-        ASSERT_EQ(count_title_level("## Hello!"), 2);
-        ASSERT_EQ(count_title_level("Yes, indeed!"), 0);
-        ASSERT_EQ(count_title_level("# Yes!"), 1);
-        ASSERT_EQ(count_title_level("### Neng Li"), 3);
-        SUCCESS; 
-    });
+    run_test(
+        "obtaining header levels", TEST {
+            ASSERT_EQ(count_title_level("## Hello!"), 2);
+            ASSERT_EQ(count_title_level("Yes, indeed!"), 0);
+            ASSERT_EQ(count_title_level("# Yes!"), 1);
+            ASSERT_EQ(count_title_level("### Neng Li"), 3);
+            SUCCESS;
+        });
+
+    run_test(
+        "parsing out basic slot templates", TEST {
+            using neng::BasicDocumentTemplate;
+
+            const auto [templ, error] =
+                BasicDocumentTemplate::from_file("tests/basic-slot.html");
+
+            ASSERT_EQ(templ.before, "Hello, this is a test!\n");
+            ASSERT_EQ(templ.after, "\nYes, this is indeed a test!");
+            SUCCESS;
+        });
 }
 } // namespace neng
