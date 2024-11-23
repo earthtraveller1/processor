@@ -114,9 +114,14 @@ DocumentConfiguration::from_file(std::string_view file_path) {
         std::string line;
         std::getline(file, line);
 
+        // Ignore blank lines
+        if (trim_string(line) == "") {
+            continue;
+        }
+
         const auto statement_parts = neng::split_string(line, "=");
 
-        if (statement_parts.size() < 2) {
+        if (statement_parts.size() != 2) {
             std::cerr << "[ERROR]: " << file_path << ":" << line_number
                       << ": Invalid syntax\n";
             return {{}, Error::INVALID_SYNTAX};
