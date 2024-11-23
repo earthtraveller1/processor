@@ -169,8 +169,8 @@ void run_tests() {
             const auto [templ, error] =
                 BasicDocumentTemplate::from_file("tests/basic-slot.html");
 
-            ASSERT_EQ(templ.before, "Hello, this is a test!\n");
-            ASSERT_EQ(templ.after, "\nYes, this is indeed a test!");
+            ASSERT_EQ(templ.before, "Hello, this is a test!");
+            ASSERT_EQ(templ.after, "Yes, this is indeed a test!");
             SUCCESS;
         });
 }
