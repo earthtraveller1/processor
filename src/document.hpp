@@ -7,6 +7,7 @@ enum class Error {
     FILE_READ_ERROR = 1,
     FILE_OPEN_ERROR = 2,
     TOO_MANY_SLOTS_ERROR = 3,
+    INVALID_SYNTAX = 4,
 };
 
 std::ostream &operator<<(std::ostream &os, Error error);

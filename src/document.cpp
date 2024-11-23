@@ -21,6 +21,9 @@ std::ostream &operator<<(std::ostream &os, Error error) {
     case Error::TOO_MANY_SLOTS_ERROR:
         os << "TOO_MANY_SLOTS_ERROR";
         break;
+    case Error::INVALID_SYNTAX:
+        os << "INVALID_SYNTAX";
+        break;
     }
 
     return os;
@@ -106,17 +109,29 @@ DocumentConfiguration::from_file(std::string_view file_path) {
     std::string title_class;
     std::string paragraph_class;
 
+    uint32_t line_number = 1;
     while (!file.eof()) {
         std::string line;
         std::getline(file, line);
 
         const auto statement_parts = neng::split_string(line, "=");
 
+        if (statement_parts.size() < 2) {
+            std::cerr << "[ERROR]: " << file_path << ":" << line_number
+                      << ": Invalid syntax\n";
+            return {{}, Error::INVALID_SYNTAX};
+        }
+
         if (statement_parts.at(0) == "title_class") {
             title_class = statement_parts.at(1);
         } else if (statement_parts.at(0) == "paragraph_class") {
             paragraph_class = statement_parts.at(1);
+        } else {
+            std::cerr << "[ERROR]: " << file_path << ":" << line_number
+                      << ": Unknown key '" << statement_parts.at(0) << "'\n";
         }
+
+        line_number++;
     }
 
     return {
