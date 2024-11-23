@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 
             const auto file_output =
                 output_path /
-                fs::relative(file_path, target_path).concat(".html");
+                fs::relative(file_path, target_path).replace_extension(".html");
 
             auto file_output_dir = file_output;
             file_output_dir.remove_filename();
