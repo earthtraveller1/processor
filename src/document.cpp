@@ -247,9 +247,14 @@ BasicDocumentTemplate::from_file(const std::filesystem::path &path) {
 
         const std::string_view slot_literal = "${{slot}}";
         const auto slot_position = line.find("${{slot}}");
-        if (slot_position == std::string::npos && at_before) {
-            before += line;
-            continue;
+        if (slot_position == std::string::npos) {
+            if (at_before) {
+                before += line + ' ';
+                continue;
+            } else {
+                after += line + ' ';
+                continue;
+            }
         }
 
         if (!at_before) {
@@ -258,15 +263,15 @@ BasicDocumentTemplate::from_file(const std::filesystem::path &path) {
             return {{}, Error::TOO_MANY_SLOTS_ERROR};
         }
 
-        before += line.substr(0, slot_position - 1);
+        before += line.substr(0, slot_position);
         at_before = false;
-        after += line.substr(slot_position + slot_literal.size());
+        after += line.substr(slot_position + slot_literal.size()) + ' ';
     }
 
     return {
         BasicDocumentTemplate{
-            .before = before,
-            .after = after,
+            .before = trim_string(before),
+            .after = trim_string(after),
         },
         Error::OK,
     };
