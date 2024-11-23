@@ -1,8 +1,2 @@
 title_class=title
 paragraph_class=paragraph
-header={
-    <nav>The end of the world is upon us!</nav>
-}
-footer={
-    <small>Yes, indeed!</small>
-}
