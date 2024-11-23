@@ -119,7 +119,7 @@ void run_tests() {
             const auto result = templ.render_html_to_string(document);
             ASSERT_EQ(
                 result,
-                R"html(<body><h1 class="header1">Hello!</h1><p class="paragraph"/>This is a test!</p></body>)html");
+                R"html(<body><h1 class="title">Hello!</h1><p class="paragraph">This is a test!</p></body>)html");
 
             SUCCESS;
         });

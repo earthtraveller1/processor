@@ -91,7 +91,7 @@ std::string Paragraph::render_to_html(std::string_view paragraph_class,
     case ParagraphType::HEADER:
         opener = "<h"s + std::to_string(header_level);
         if (header_level == 1) {
-            opener += "class=\"" + std::string(title_class) + "\"";
+            opener += " class=\"" + std::string(title_class) + "\"";
         }
         opener += '>';
         closer = "</h"s + std::to_string(header_level) + ">";
