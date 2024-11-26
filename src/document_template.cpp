@@ -68,4 +68,26 @@ DocumentTemplate::from_string(std::string_view string) {
         Error::OK,
     };
 }
+
+std::string DocumentTemplate::render_to_string(std::string_view title,
+                                               std::string_view body) const {
+    std::string acc;
+
+    for (const auto &segment : segments) {
+        switch (segment.type) {
+        case TemplateSegment::Type::TEXT:
+            acc += segment.a;
+            break;
+        case TemplateSegment::Type::VARIABLE:
+            if (segment.a == "title") {
+                acc += title;
+            } else if (segment.a == "body") {
+                acc += body;
+            }
+            break;
+        }
+    }
+
+    return acc;
+}
 } // namespace neng
