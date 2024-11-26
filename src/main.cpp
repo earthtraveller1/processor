@@ -9,7 +9,7 @@ namespace fs = std::filesystem;
 namespace {} // namespace
 
 int main(int argc, char **argv) {
-    fs::path target_path{"./pages"};
+    fs::path target_path{"./"};
     fs::path output_path{"./out"};
 
     for (char **arg = argv + 1; arg < argv + argc; arg++) {
@@ -33,8 +33,10 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (!fs::exists(target_path)) {
-        std::cerr << "[ERROR]: target directory does not exist.\n";
+    fs::path pages_path = target_path / "pages/";
+
+    if (!fs::exists(pages_path)) {
+        std::cerr << "[ERROR]: pages directory does not exist.\n";
         return EXIT_FAILURE;
     }
 
@@ -75,7 +77,7 @@ int main(int argc, char **argv) {
     // Ensure the output directory exists
     fs::create_directory(output_path);
 
-    for (const auto &file : fs::recursive_directory_iterator{target_path}) {
+    for (const auto &file : fs::recursive_directory_iterator{pages_path}) {
         using neng::Document;
 
         const auto file_path = file.path();
