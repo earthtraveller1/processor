@@ -40,7 +40,7 @@ struct Document {
     static Document parse_document(std::string_view content);
 
     static std::tuple<Document, Error>
-    parse_document_from_file(std::string_view file_path);
+    parse_document_from_file(const std::filesystem::path& file_path);
 
     std::string get_title() const;
 };

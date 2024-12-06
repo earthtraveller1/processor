@@ -217,8 +217,8 @@ Document Document::parse_document(std::string_view document) {
 }
 
 std::tuple<Document, Error>
-Document::parse_document_from_file(std::string_view file_path) {
-    std::ifstream file(file_path.data());
+Document::parse_document_from_file(const std::filesystem::path& file_path) {
+    std::ifstream file(file_path);
     if (!file.is_open()) {
         return {{}, Error::FILE_OPEN_ERROR};
     }
