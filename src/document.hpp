@@ -41,6 +41,8 @@ struct Document {
 
     static std::tuple<Document, Error>
     parse_document_from_file(std::string_view file_path);
+
+    std::string get_title() const;
 };
 
 struct DocumentConfiguration {

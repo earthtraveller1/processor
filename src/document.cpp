@@ -241,6 +241,16 @@ Document::parse_document_from_file(std::string_view file_path) {
     return {{paragraphs}, Error::OK};
 }
 
+std::string Document::get_title() const {
+    for (const auto &paragraph : paragraphs) {
+        if (paragraph.type == ParagraphType::HEADER) {
+            return paragraph.content;
+        }
+    }
+
+    return "";
+}
+
 std::string
 DocumentConfiguration::render_html_to_string(const Document &document) const {
     std::string result;
