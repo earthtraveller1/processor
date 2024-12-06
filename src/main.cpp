@@ -1,4 +1,5 @@
 #include "document.hpp"
+#include "document_template.hpp"
 #include "tests.hpp"
 
 #include <fstream>
@@ -68,7 +69,7 @@ int main(int argc, char **argv) {
     }
 
     const auto [document_template, error2] =
-        neng::BasicDocumentTemplate::from_file(template_path);
+        neng::DocumentTemplate::from_file(template_path);
     if (error2 != Error::OK) {
         std::cerr << "[ERROR]: Failed to parse the template: " << error << '\n';
         return EXIT_FAILURE;
@@ -92,8 +93,9 @@ int main(int argc, char **argv) {
 
             const auto rendered_result =
                 document_config.render_html_to_string(document);
+            const auto title = document.get_title();
             const auto slotted_result =
-                document_template.insert_body(rendered_result);
+                document_template.render_to_string(title, rendered_result);
 
             const auto file_output =
                 output_path /
