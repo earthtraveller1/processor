@@ -7,7 +7,35 @@
 using namespace std::literals::string_literals;
 namespace fs = std::filesystem;
 
-namespace {} // namespace
+namespace {
+using neng::Document;
+using neng::DocumentConfiguration;
+using neng::DocumentTemplate;
+using neng::Error;
+
+Error render_single_file(const fs::path &in_path, const fs::path &out_path,
+                         const DocumentConfiguration &document_config,
+                         const DocumentTemplate &document_template) {
+    const auto [document, error] = Document::parse_document_from_file(in_path);
+    if (error != Error::OK) {
+        return error;
+    }
+
+    const auto rendered_result =
+        document_config.render_html_to_string(document);
+    const auto slotted_result = document_template.render_to_string(
+        document.get_title(), rendered_result);
+
+    std::ofstream out_file(out_path);
+    if (!out_file.is_open()) {
+        return Error::FILE_OPEN_ERROR;
+    }
+
+    out_file << slotted_result;
+
+    return Error::OK;
+}
+} // namespace
 
 int main(int argc, char **argv) {
     fs::path target_path{"./"};
@@ -83,20 +111,6 @@ int main(int argc, char **argv) {
 
         const auto file_path = file.path();
         if (file_path.extension() == ".md") {
-            const auto [document, error] =
-                Document::parse_document_from_file(file_path.string());
-            if (error != Error::OK) {
-                std::cerr << "[ERROR]: Failed to process document " << file_path
-                          << '\n';
-                continue;
-            }
-
-            const auto rendered_result =
-                document_config.render_html_to_string(document);
-            const auto title = document.get_title();
-            const auto slotted_result =
-                document_template.render_to_string(title, rendered_result);
-
             const auto file_output =
                 output_path /
                 fs::relative(file_path, target_path).replace_extension(".html");
@@ -106,14 +120,8 @@ int main(int argc, char **argv) {
 
             fs::create_directories(file_output_dir);
 
-            std::ofstream output_file(file_output);
-            if (!output_file.is_open()) {
-                std::cerr << "[ERROR]: Failed to open " << file_output
-                          << " for writing.\n";
-                continue;
-            }
-
-            output_file << slotted_result;
+            render_single_file(file_path, file_output, document_config,
+                               document_template);
         }
     }
 
