@@ -135,6 +135,11 @@ int main(int argc, char **argv) {
     }
 
     if (fs::is_directory(target_path)) {
+        if (!fs::is_directory(output_path)) {
+            std::cerr << "[ERROR]: " << output_path << " is not a directory.\n";
+            return EXIT_FAILURE;
+        }
+
         const auto config_path = target_path / "config.neng";
         const auto template_path = target_path / "template.html";
 
@@ -145,6 +150,11 @@ int main(int argc, char **argv) {
                       << "\n";
         }
     } else {
+        if (fs::is_directory(output_path)) {
+            std::cerr << "[ERROR]: " << output_path << " is a directory.\n";
+            return EXIT_FAILURE;
+        }
+
         if (!user_specified_config_path.has_value()) {
             std::cerr << "[ERROR]: When processing a single file, you need to "
                          "specify a configuration path.\n";
