@@ -21,7 +21,7 @@ struct DocumentTemplate {
     from_string(std::string_view string);
 
     static std::tuple<DocumentTemplate, Error>
-    from_file(std::filesystem::path path);
+    from_file(const std::filesystem::path& path);
 
     std::string render_to_string(std::string_view title,
                                  std::string_view body) const;

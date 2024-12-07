@@ -69,6 +69,24 @@ DocumentTemplate::from_string(std::string_view string) {
     };
 }
 
+std::tuple<DocumentTemplate, Error>
+DocumentTemplate::from_file(const std::filesystem::path &path) {
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        return {{}, Error::FILE_OPEN_ERROR};
+    }
+
+    std::string source;
+
+    while (!file.eof()) {
+        char buffer[4096];
+        file.read(buffer, 4096);
+        source.append(buffer, file.gcount());
+    }
+
+    return from_string(source);
+}
+
 std::string DocumentTemplate::render_to_string(std::string_view title,
                                                std::string_view body) const {
     std::string acc;

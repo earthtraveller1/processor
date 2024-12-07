@@ -3,6 +3,8 @@ target_sources(
 
     document.cpp
     document.hpp
+    document_template.cpp
+    document_template.hpp
     main.cpp
     pch.hpp
     string_utils.cpp
