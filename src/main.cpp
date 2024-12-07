@@ -35,6 +35,71 @@ Error render_single_file(const fs::path &in_path, const fs::path &out_path,
 
     return Error::OK;
 }
+
+Error render_directory(const fs::path &in_path, const fs::path &out_path) {
+    const auto config_path = in_path / "config.neng";
+    if (!fs::exists(config_path)) {
+        std::cerr << "[ERROR]: config.neng file does not exist. Make sure a "
+                     "config.neng file exists in "
+                  << in_path << '\n';
+        return Error::FILE_DOES_NOT_EXIST;
+    }
+
+    const auto template_path = in_path / "template.html";
+    if (!fs::exists(template_path)) {
+        std::cerr << "[ERROR]: template.html file does not exist. Make sure a "
+                     "template.html file exists in "
+                  << in_path << '\n';
+        return Error::FILE_DOES_NOT_EXIST;
+    }
+
+
+    const auto [document_config, error] =
+        DocumentConfiguration::from_file(config_path.string());
+    if (error != Error::OK) {
+        std::cerr << "[ERROR]: Failed to parse the configuration: " << error
+                  << '\n';
+        return error;
+    }
+
+    const auto [document_template, error2] =
+        neng::DocumentTemplate::from_file(template_path);
+    if (error2 != Error::OK) {
+        std::cerr << "[ERROR]: Failed to parse the template: " << error << '\n';
+        return error;
+    }
+
+    // Ensure the output directory exists
+    fs::create_directory(out_path);
+
+    fs::path pages_path = in_path / "pages/";
+
+    if (!fs::exists(pages_path)) {
+        std::cerr << "[ERROR]: pages directory does not exist.\n";
+        return Error::NO_PAGES_DIRECTORY;
+    }
+
+    for (const auto &file : fs::recursive_directory_iterator{in_path}) {
+        using neng::Document;
+
+        const auto file_path = file.path();
+        if (file_path.extension() == ".md") {
+            const auto file_output =
+                out_path /
+                fs::relative(file_path, in_path).replace_extension(".html");
+
+            auto file_output_dir = file_output;
+            file_output_dir.remove_filename();
+
+            fs::create_directories(file_output_dir);
+
+            render_single_file(file_path, file_output, document_config,
+                               document_template);
+        }
+    }
+
+    return Error::OK;
+}
 } // namespace
 
 int main(int argc, char **argv) {
@@ -62,67 +127,9 @@ int main(int argc, char **argv) {
         }
     }
 
-    fs::path pages_path = target_path / "pages/";
-
-    if (!fs::exists(pages_path)) {
-        std::cerr << "[ERROR]: pages directory does not exist.\n";
-        return EXIT_FAILURE;
-    }
-
-    const auto config_path = target_path / "config.neng";
-    if (!fs::exists(config_path)) {
-        std::cerr << "[ERROR]: config.neng file does not exist. Make sure a "
-                     "config.neng file exists in "
-                  << target_path << '\n';
-        return EXIT_FAILURE;
-    }
-
-    const auto template_path = target_path / "template.html";
-    if (!fs::exists(template_path)) {
-        std::cerr << "[ERROR]: template.html file does not exist. Make sure a "
-                     "template.html file exists in "
-                  << target_path << '\n';
-        return EXIT_FAILURE;
-    }
-
-    using neng::DocumentConfiguration;
-    using neng::Error;
-
-    const auto [document_config, error] =
-        DocumentConfiguration::from_file(config_path.string());
-    if (error != Error::OK) {
-        std::cerr << "[ERROR]: Failed to parse the configuration: " << error
-                  << '\n';
-        return EXIT_FAILURE;
-    }
-
-    const auto [document_template, error2] =
-        neng::DocumentTemplate::from_file(template_path);
-    if (error2 != Error::OK) {
-        std::cerr << "[ERROR]: Failed to parse the template: " << error << '\n';
-        return EXIT_FAILURE;
-    }
-
-    // Ensure the output directory exists
-    fs::create_directory(output_path);
-
-    for (const auto &file : fs::recursive_directory_iterator{pages_path}) {
-        using neng::Document;
-
-        const auto file_path = file.path();
-        if (file_path.extension() == ".md") {
-            const auto file_output =
-                output_path /
-                fs::relative(file_path, target_path).replace_extension(".html");
-
-            auto file_output_dir = file_output;
-            file_output_dir.remove_filename();
-
-            fs::create_directories(file_output_dir);
-
-            render_single_file(file_path, file_output, document_config,
-                               document_template);
-        }
+    const auto result = render_directory(target_path, output_path);
+    if (result != Error::OK) {
+        std::cerr << "[ERROR]: Failed to process the directory: " << result << "\n";
     }
 
     return 0;

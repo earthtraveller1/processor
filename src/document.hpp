@@ -8,6 +8,8 @@ enum class Error {
     FILE_OPEN_ERROR = 2,
     TOO_MANY_SLOTS_ERROR = 3,
     INVALID_SYNTAX = 4,
+    NO_PAGES_DIRECTORY = 5,
+    FILE_DOES_NOT_EXIST = 6,
 };
 
 std::ostream &operator<<(std::ostream &os, Error error);
