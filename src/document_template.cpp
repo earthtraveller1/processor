@@ -70,6 +70,11 @@ DocumentTemplate::from_string(std::string_view string) {
         }
     }
 
+    segments.push_back({
+        .type = TemplateSegment::Type::TEXT,
+        .a = trim_string(accumulator),
+    });
+
     if (collecting_expression) {
         std::cerr << "[ERROR]: Unclosed expression.\n";
     }
