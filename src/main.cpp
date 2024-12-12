@@ -100,6 +100,49 @@ Error render_directory(const fs::path &config_path,
 
     return Error::OK;
 }
+
+constexpr std::string_view HELP_TEXT = R"help_text(
+Hello! processor is a simple static site generator that I made for personal 
+uses! Due to its very specific niche, it lacks many features that one would
+normally find in other static generators. I would recommend Hugo or Astro
+for a more serious project. However, this is a rather okay project as well, 
+so feel free to try using it if you can figure it out.
+
+Arguments:
+
+    -i, --input <input file or directory> Specifies the input document, or a 
+                                          directory of them.
+
+    -o, --output <output file or directory> Specifies the output file or 
+                                            directory.
+
+    -t, --template <template file> Specifies the template file.
+
+    -c, --config <config file> Specifies the configuration file.
+
+Document format:
+
+    Currently, I only support Markdown, and even then, a very limited version
+    of it. I might expand it to support more features of Markdown, but that will
+    require a bit of a rewrite, and I'm too lazy to do that right now.
+
+Template format:
+
+    It is essentially an HTML file, but with the ${{title}} and ${{body}} template
+    expressions that allows you to insert the generated content from the document
+    anywhere in the template. May expand it later to include more features, but 
+    so far, it's decent.
+
+Configuration format:
+
+    Very straightfoward. Here's an example configuration to show you what I mean.
+
+    title_class=title
+    paragraph_class=paragraph
+
+    Yeah, those are the only two options here so far. Also, do not put spaces
+    between the equal signs. I cannot guarantee that it will work.
+)help_text";
 } // namespace
 
 int main(int argc, char **argv) {
@@ -118,17 +161,22 @@ int main(int argc, char **argv) {
             return EXIT_SUCCESS;
         }
 #endif
+        
+        if (sw_arg == "--help") {
+            std::cout << HELP_TEXT;
+            return EXIT_SUCCESS;
+        }
 
         if (arg > argv + 1) {
             std::string_view previous_arg{*(arg - 1)};
 
-            if (previous_arg == "-i") {
+            if (previous_arg == "-i" || previous_arg == "--input") {
                 target_path = fs::path{*arg};
-            } else if (previous_arg == "-o") {
+            } else if (previous_arg == "-o" || previous_arg == "--output") {
                 output_path = fs::path{*arg};
-            } else if (previous_arg == "-c") {
+            } else if (previous_arg == "-c" || previous_arg == "--config") {
                 user_specified_config_path = fs::path{*arg};
-            } else if (previous_arg == "-t") {
+            } else if (previous_arg == "-t" || previous_arg == "--template") {
                 user_specified_template_path = fs::path{*arg};
             }
         }
