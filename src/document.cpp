@@ -24,6 +24,12 @@ std::ostream &operator<<(std::ostream &os, Error error) {
     case Error::INVALID_SYNTAX:
         os << "INVALID_SYNTAX";
         break;
+    case Error::NO_PAGES_DIRECTORY:
+        os << "NO_PAGES_DIRECTORY";
+        break;
+    case Error::FILE_DOES_NOT_EXIST:
+        os << "FILE_DOES_NOT_EXIST";
+        break;
     }
 
     return os;
