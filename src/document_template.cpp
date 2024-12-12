@@ -50,7 +50,7 @@ DocumentTemplate::from_string(std::string_view string) {
                 });
 
                 accumulator.clear();
-                i += 3;
+                i += 2;
             }
 
             collecting_expression = true;
@@ -63,7 +63,7 @@ DocumentTemplate::from_string(std::string_view string) {
                 accumulator.clear();
                 collecting_expression = false;
 
-                i += 2;
+                i += 1;
             }
         } else {
             accumulator.push_back(string[i]);
