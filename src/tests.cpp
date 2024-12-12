@@ -120,7 +120,7 @@ void run_tests() {
             const auto result = templ.render_html_to_string(document);
             ASSERT_EQ(
                 result,
-                R"html(<body><h1 class="title">Hello!</h1><p class="paragraph">This is a test!</p></body>)html");
+                R"html(<h1 class="title">Hello!</h1><p class="paragraph">This is a test!</p>)html");
 
             SUCCESS;
         });
@@ -193,6 +193,9 @@ void run_tests() {
             ASSERT_EQ(templ.segments.at(3).type,
                       TemplateSegment::Type::VARIABLE);
             ASSERT_EQ(templ.segments.at(3).a, "body");
+            ASSERT_EQ(templ.segments.at(4).type,
+                      TemplateSegment::Type::TEXT);
+            ASSERT_EQ(templ.segments.at(4).a, "!\nAmazing, I know.");
 
             SUCCESS;
         });
