@@ -18,6 +18,19 @@ TemplateSegment parse_expression(std::string_view expression) {
 } // namespace
 
 namespace neng {
+std::ostream &operator<<(std::ostream &stream, TemplateSegment::Type type) {
+    switch (type) {
+        case TemplateSegment::Type::VARIABLE:
+            stream << "TemplateSegment::Type::VARIABLE";
+            break;
+        case TemplateSegment::Type::TEXT:
+            stream << "TemplateSegment::Type::TEXT";
+            break;
+    }
+
+    return stream;
+}
+
 std::tuple<DocumentTemplate, Error>
 DocumentTemplate::from_string(std::string_view string) {
     bool collecting_expression = false;

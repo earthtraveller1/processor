@@ -14,6 +14,8 @@ struct TemplateSegment {
     std::string a;
 };
 
+std::ostream& operator<<(std::ostream& stream, TemplateSegment::Type type);
+
 struct DocumentTemplate {
     std::vector<TemplateSegment> segments;
 
