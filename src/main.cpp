@@ -120,6 +120,12 @@ Arguments:
 
     -c, --config <config file> Specifies the configuration file.
 
+Defaults:
+    input - ./
+    output - ./out
+    template - ./template.html
+    config - ./config.neng
+
 Document format:
 
     Currently, I only support Markdown, and even then, a very limited version
