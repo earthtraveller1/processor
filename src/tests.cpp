@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include "document.hpp"
+#include "document_template.hpp"
 #include "string_utils.hpp"
 
 struct TestResult {
@@ -171,6 +172,28 @@ void run_tests() {
 
             ASSERT_EQ(templ.before, "Hello, this is a test!");
             ASSERT_EQ(templ.after, "Yes, this is indeed a test!");
+            SUCCESS;
+        });
+
+    run_test(
+        "parsing out basic templates", TEST {
+            using neng::DocumentTemplate;
+            using neng::TemplateSegment;
+
+            const auto [templ, error] =
+                DocumentTemplate::from_file("tests/basic.html");
+
+            ASSERT_EQ(templ.segments.at(0).type, TemplateSegment::Type::TEXT);
+            ASSERT_EQ(templ.segments.at(0).a, "Hello! Here is the title: ");
+            ASSERT_EQ(templ.segments.at(1).type,
+                      TemplateSegment::Type::VARIABLE);
+            ASSERT_EQ(templ.segments.at(1).a, "title");
+            ASSERT_EQ(templ.segments.at(2).type, TemplateSegment::Type::TEXT);
+            ASSERT_EQ(templ.segments.at(2).a, ".\nAnd here is the body: ");
+            ASSERT_EQ(templ.segments.at(3).type,
+                      TemplateSegment::Type::VARIABLE);
+            ASSERT_EQ(templ.segments.at(3).a, "body");
+
             SUCCESS;
         });
 }
