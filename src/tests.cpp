@@ -1,3 +1,4 @@
+#include <exception>
 #include <sstream>
 
 #include "document.hpp"
@@ -17,12 +18,17 @@ concept TestFunction = requires(F f) {
 template <TestFunction F>
 inline void run_test(std::string_view name, F function) {
     std::cout << "Running \033[36m" << name << "\033[0m \t.........";
-    auto result = function();
-    if (result.passed) {
-        std::cout << "\033[32m Passed \033[0m\n";
-    } else {
+    try {
+        auto result = function();
+        if (result.passed) {
+            std::cout << "\033[32m Passed \033[0m\n";
+        } else {
+            std::cout << "\033[91m Failed \n";
+            std::cout << "[ERROR]: " << result.error_message << "\033[0m\n";
+        }
+    } catch (const std::exception& exception) {
         std::cout << "\033[91m Failed \n";
-        std::cout << "[ERROR]: " << result.error_message << "\033[0m\n";
+        std::cout << "[ERROR]: " << exception.what() << "\033[0m\n";
     }
 }
 
@@ -193,8 +199,7 @@ void run_tests() {
             ASSERT_EQ(templ.segments.at(3).type,
                       TemplateSegment::Type::VARIABLE);
             ASSERT_EQ(templ.segments.at(3).a, "body");
-            ASSERT_EQ(templ.segments.at(4).type,
-                      TemplateSegment::Type::TEXT);
+            ASSERT_EQ(templ.segments.at(4).type, TemplateSegment::Type::TEXT);
             ASSERT_EQ(templ.segments.at(4).a, "!\nAmazing, I know.");
 
             SUCCESS;
