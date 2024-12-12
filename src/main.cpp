@@ -149,8 +149,8 @@ int main(int argc, char **argv) {
     fs::path target_path{"./"};
     fs::path output_path{"./out"};
 
-    std::optional<fs::path> user_specified_config_path;
-    std::optional<fs::path> user_specified_template_path;
+    fs::path config_path{"./config.neng"};
+    fs::path template_path{"./template.html"};
 
     for (char **arg = argv + 1; arg < argv + argc; arg++) {
         std::string_view sw_arg{*arg};
@@ -175,9 +175,9 @@ int main(int argc, char **argv) {
             } else if (previous_arg == "-o" || previous_arg == "--output") {
                 output_path = fs::path{*arg};
             } else if (previous_arg == "-c" || previous_arg == "--config") {
-                user_specified_config_path = fs::path{*arg};
+                config_path = fs::path{*arg};
             } else if (previous_arg == "-t" || previous_arg == "--template") {
-                user_specified_template_path = fs::path{*arg};
+                template_path = fs::path{*arg};
             }
         }
     }
@@ -187,9 +187,6 @@ int main(int argc, char **argv) {
             std::cerr << "[ERROR]: " << output_path << " is not a directory.\n";
             return EXIT_FAILURE;
         }
-
-        const auto config_path = target_path / "config.neng";
-        const auto template_path = target_path / "template.html";
 
         const auto result = render_directory(config_path, template_path,
                                              target_path, output_path);
@@ -202,21 +199,6 @@ int main(int argc, char **argv) {
             std::cerr << "[ERROR]: " << output_path << " is a directory.\n";
             return EXIT_FAILURE;
         }
-
-        if (!user_specified_config_path.has_value()) {
-            std::cerr << "[ERROR]: When processing a single file, you need to "
-                         "specify a configuration path.\n";
-            return EXIT_FAILURE;
-        }
-
-        if (!user_specified_template_path.has_value()) {
-            std::cerr << "[ERROR]: When processing a single file, you need to "
-                         "specify a template path.\n";
-            return EXIT_FAILURE;
-        }
-
-        const auto config_path = user_specified_config_path.value();
-        const auto template_path = user_specified_template_path.value();
 
         const auto [document_config, error] =
             DocumentConfiguration::from_file(config_path.string());
